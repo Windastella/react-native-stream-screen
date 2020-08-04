@@ -34,7 +34,7 @@ export default class App extends React.Component {
 			await this.getIpAddress();
 			await this.getPermission();
 			this.startServer();
-			this.interval = setInterval(this.capture.bind(this), 3000);
+			this.interval = setInterval(this.capture.bind(this), 2000);
 		} catch (ex) {
 			console.log(ex);
 		}
@@ -96,19 +96,19 @@ export default class App extends React.Component {
 		let res = {
 			status:"OK",
 			type:"text/html",
-			data:`<html style="margin:0;">
+			data:`<body style="margin:0;">
 				<iframe id="iframe" src="/image" style="width:100%;height:100%;"></iframe>
 				<script>
 					window.setInterval(function() {
 						reloadIFrame()
-					}, 5000);
+					}, 3000);
 			
 					function reloadIFrame() {
 						console.log('reloading..');
 						document.getElementById('iframe').contentWindow.location.reload();
 					}
 				</script>
-			</html>`,
+			</body>`,
 		};
 
 		if(url == '/image')
@@ -116,7 +116,7 @@ export default class App extends React.Component {
 				status:"OK",
 				type:"text/html",
 				data:`<div style="width:100%;height:100%;display:flex;justifyContent:center;">
-					<img style="margin:auto;height:100%;" src="${uri}"></img>
+					<img style="margin:auto;width:100%;" src="${uri}"></img>
 				</div>`,
 			};
 		
