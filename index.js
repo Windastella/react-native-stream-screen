@@ -11,7 +11,7 @@ import { Text, PermissionsAndroid } from 'react-native';
 
 import { NetworkInfo } from "react-native-network-info";
 import ViewShot  from "react-native-view-shot";
-import httpServer from 'react-native-http-server';
+import httpServer from 'react-native-http-bridge';
 
 export default class App extends React.Component {
 	constructor(props){
@@ -25,11 +25,19 @@ export default class App extends React.Component {
 		this.shot = React.createRef();
 	}
 
-	async componentDidMount(){
-		await this.getIpAddress();
-		await this.getPermission();
-		this.startServer();
-		this.interval = setInterval(this.capture.bind(this), 1000);
+	componentDidMount(){
+		this.init();
+	}
+
+	async init(){
+		try {
+			await this.getIpAddress();
+			await this.getPermission();
+			this.startServer();
+			this.interval = setInterval(this.capture.bind(this), 3000);
+		} catch (ex) {
+			console.log(ex);
+		}
 	}
 
 	componentWillUnmount(){
@@ -71,15 +79,14 @@ export default class App extends React.Component {
 
 	async startServer(){
 		try{
-			await httpServer.stop();
-			httpServer.init({host:"0.0.0.0", port:8080},this.handleRequest.bind(this));
-			let args = await httpServer.start();
-		}catch(ex){
+			httpServer.stop();
+			httpServer.start(8080,'stream server',this.handleRequest.bind(this));
+		}catch(err){
 			console.warn(err);
 		}
 	}
 
-	async handleRequest(request, send){
+	async handleRequest(request){
 		let {uri} = this.state;
 
 		// interpret the url
@@ -89,17 +96,19 @@ export default class App extends React.Component {
 		let res = {
 			status:"OK",
 			type:"text/html",
-			data:`<iframe id="iframe" src="/image" style="width:100%;height:100%;"></iframe>
-			<script>
-				window.setInterval(function() {
-					reloadIFrame()
-				}, 3000);
-		
-				function reloadIFrame() {
-					console.log('reloading..');
-					document.getElementById('iframe').contentWindow.location.reload();
-				}
-			</script>`,
+			data:`<html style="margin:0;">
+				<iframe id="iframe" src="/image" style="width:100%;height:100%;"></iframe>
+				<script>
+					window.setInterval(function() {
+						reloadIFrame()
+					}, 5000);
+			
+					function reloadIFrame() {
+						console.log('reloading..');
+						document.getElementById('iframe').contentWindow.location.reload();
+					}
+				</script>
+			</html>`,
 		};
 
 		if(url == '/image')
@@ -111,7 +120,7 @@ export default class App extends React.Component {
 				</div>`,
 			};
 		
-		send(res);
+		httpServer.respond(request.requestId, 200, res.type, res.data);
 	}
 
 	render(){

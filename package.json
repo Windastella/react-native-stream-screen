@@ -1,6 +1,6 @@
 {
   "name": "@windastella/react-native-stream-view",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "index.js",
   "description": "A view that streams to http",
   "peerDependencies": {
