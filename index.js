@@ -34,7 +34,6 @@ export default class App extends React.Component {
 			await this.getIpAddress();
 			await this.getPermission();
 			this.startServer();
-			this.interval = setInterval(this.capture.bind(this), 2000);
 		} catch (ex) {
 			console.log(ex);
 		}
@@ -42,7 +41,6 @@ export default class App extends React.Component {
 
 	componentWillUnmount(){
 		httpServer.stop();
-		clearInterval(this.interval);
 	}
 
 	async getPermission(){
