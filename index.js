@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, PermissionsAndroid } from 'react-native';
 
 import { NetworkInfo } from "react-native-network-info";
 import ViewShot  from "react-native-view-shot";
@@ -27,6 +27,7 @@ export default class App extends React.Component {
 
 	async componentDidMount(){
 		await this.getIpAddress();
+		await this.getPermission();
 		this.startServer();
 		this.interval = setInterval(this.capture.bind(this), 1000);
 	}
@@ -34,6 +35,20 @@ export default class App extends React.Component {
 	componentWillUnmount(){
 		httpServer.stop();
 		clearInterval(this.interval);
+	}
+
+	async getPermission(){
+		try{
+
+			const { PERMISSIONS } = PermissionsAndroid;
+
+			let granted = await PermissionsAndroid.requestMultiple([ 
+				PERMISSIONS.READ_EXTERNAL_STORAGE, PERMISSIONS.WRITE_EXTERNAL_STORAGE ]);
+			
+			return granted;
+		} catch(ex){
+			console.warn(ex);
+		}
 	}
 
 	async getIpAddress(){
