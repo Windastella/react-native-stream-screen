@@ -68,9 +68,8 @@ export default class App extends React.Component {
 		}
 	}
 
-	async capture(){
+	async capture(uri){
 		try {
-			let uri = await this.shot.current.capture();
 			this.state.uri = uri;
 		} catch (err) {
 		  	console.warn(err);
@@ -127,7 +126,7 @@ export default class App extends React.Component {
 		let { ip_address } = this.state;
 		let { children, hideAddress } = this.props;
 
-		return (<ViewShot ref={this.shot} options={{result:"data-uri"}} {...this.props}>
+		return (<ViewShot onCapture={this.capture.bind(this)} options={{result:"data-uri"}} captureMode="update" {...this.props}>
 				{!hideAddress && <Text style={{position:"absolute", top:0, right:0 }}>{ip_address}:8080</Text>}
 				{children}
 			</ViewShot>);
