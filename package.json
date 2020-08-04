@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "index.js",
   "description": "A view that streams to http",
-  "dependencies": {
+  "peerDependencies": {
     "react-native-http-server": "github:Windastella/react-native-http-server",
     "react-native-network-info": "^5.2.1",
     "react-native-view-shot": "^3.1.2"
