@@ -27,7 +27,6 @@ export default class App extends React.Component {
 
 	async componentDidMount(){
 		await this.getIpAddress();
-		await this.requestPermission();
 		this.startServer();
 		this.interval = setInterval(this.capture.bind(this), 1000);
 	}
